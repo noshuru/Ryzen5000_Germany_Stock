@@ -4,30 +4,53 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://www.mindfactory.de/search_result.php/search_query/ryzen+9+5900X/filterKategorie/Hardware/filterKategorie2/Prozessoren%20(CPU)/filterKategorie3/AMD%20Desktop/filterKategorie4/Sockel%20AM4/listing_sort/7
+// @match        https://www.mindfactory.de/search_result.php?search_query=5900X
 // @grant        none
 // ==/UserScript==
 
 (function() {
-    let x = setTimeout(reload,10000);
+    if (Notification.permission === "granted") {
+      console.log("we have permission");
+   } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+         console.log(permission);
+         let showNotification = true
+      });
+   }
+
+    let x = setTimeout(reload, getRandomInt(10, 30) * 1000);
     let descriptionArray = document.getElementsByClassName("pname");
     console.log(descriptionArray)
-    
+
     interv();
     function interv(){
 	    for(let i = 0 ; i < descriptionArray.length ; ++i){
     	    let d = descriptionArray[i].innerHTML;
             console.log(d);
   	        d = String(d);
-            d = d.substring(0,17)
-            if(d=="AMD Ryzen 9 5900X"){
-            alert("RYZEN IS UP!");
+            if (d.includes("AMD Ryzen 9 5900X")) {
+                const notification = new Notification('MINDFACTORY HAS RYZEN 5900X STOCK', {
+                    body: '5900X IN STOCK ON MINDFACTORY'
+                })
+                notification.onclick = (e) => {
+                    window.focus();
+                };
+                let sound = 'https://srv-store5.gofile.io/download/ox731g/Air-raid-siren.mp3'
+                var player = document.createElement('audio');
+                player.src = sound;
+                player.preload = 'auto'
+                player.play();
+
             }else{
                 console.log("not yet...")
+                //reload();
             }
 	    }
     }
     function reload(){
         location.reload();
+    }
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 })();
